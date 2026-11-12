@@ -1,14 +1,14 @@
 {
   "name": "alumni-connect-portal",
   "private": true,
-  "workspaces": [
-    "backend",
-    "frontend"
-  ],
   "engines": {
     "node": ">=20.19.0"
   },
   "scripts": {
-    "build": "npm run build --workspace=alumni-connect-web"
+    "install:all": "npm ci --prefix backend && npm ci --prefix frontend",
+    "build": "npm run install:all && npm run build --prefix frontend",
+    "dev:api": "npm run dev --prefix backend",
+    "dev:web": "npm run dev --prefix frontend",
+    "create-admin": "npm run create-admin --prefix backend"
   }
 }

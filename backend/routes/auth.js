@@ -115,7 +115,7 @@ router.post("/forgot-password", async (req, res, next) => {
       secure: Number(process.env.SMTP_PORT) === 465,
       auth: { user: process.env.SMTP_USER, pass: process.env.SMTP_PASSWORD }
     });
-    const clientUrl = (process.env.CLIENT_URL || "http://localhost:5173").split(",")[0].replace(/\/$/, "");
+    const clientUrl = (process.env.CLIENT_URL || process.env.URL || "http://localhost:5173").split(",")[0].replace(/\/$/, "");
     const resetUrl = `${clientUrl}/reset-password?token=${token}`;
     await transport.sendMail({
       from: process.env.SMTP_FROM || process.env.SMTP_USER,
