@@ -1,0 +1,19 @@
+.site-header { position: relative; z-index: 5; height: 74px; border-bottom: 1px solid rgba(226, 234, 242, .85); background: #fff; }
+.nav-wrap { width: min(1190px, calc(100% - 64px)); height: 100%; margin: 0 auto; display: flex; align-items: center; justify-content: space-between; }
+.brand { display: inline-flex; align-items: center; gap: 10px; color: var(--navy); font-family: "Manrope", sans-serif; font-size: 16px; font-weight: 800; letter-spacing: -.05em; }
+.brand-mark { display: grid; width: 34px; height: 34px; place-items: center; border-radius: 9px 9px 9px 2px; background: var(--blue); color: #fff; font-size: 12px; letter-spacing: -.03em; }
+.brand-accent { color: #4b83b9; }
+.nav-links { display: flex; align-items: center; gap: 29px; color: #5e6f84; font-size: 12px; font-weight: 600; }
+.nav-links > a:not(.button):hover, .nav-links > a.active { color: var(--blue); }
+.nav-links .nav-login { color: var(--blue); }
+.nav-user { color: var(--navy); }
+
+@media (max-width: 650px) {
+  .site-header { height: 64px; }
+  .nav-wrap { width: calc(100% - 34px); }
+  .brand { font-size: 14px; }
+  .nav-links { gap: 12px; }
+  .nav-links > a[href="/#about"], .nav-links > a[href="/#features"], .nav-links > a[href="/#events"] { display: none; }
+  .nav-links .button { padding: 0 11px; font-size: 10px; }
+  .nav-user { display: none; }
+}
