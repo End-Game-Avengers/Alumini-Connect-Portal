@@ -1,0 +1,14 @@
+{
+  "name": "alumni-connect-portal",
+  "private": true,
+  "workspaces": [
+    "backend",
+    "frontend"
+  ],
+  "engines": {
+    "node": ">=20.19.0"
+  },
+  "scripts": {
+    "build": "npm run build --workspace=alumni-connect-web"
+  }
+}

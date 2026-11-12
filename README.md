@@ -8,6 +8,7 @@ The project has two independent applications:
 
 - `frontend/` is a React single-page app built with Vite. React Router handles pages, Axios calls the API, and normal CSS files provide the responsive design.
 - `backend/` is an Express REST API. Mongoose stores users and portal data in MongoDB Atlas. JWT protects private routes and role middleware limits actions.
+- The root Vercel project builds `frontend/` as a static site and routes `/api/*` to the Express function in `api/`.
 - Public registration can create only student and alumni accounts. Students are enabled immediately; alumni accounts wait for department or administrator approval. Only an existing administrator can create faculty, HOD, or administrator accounts.
 
 The browser stores the signed-in JWT in local storage and sends it as a bearer token. Passwords are hashed with bcrypt. Password-reset emails are optional and require SMTP settings.
@@ -47,10 +48,9 @@ Open two terminals from the project root.
 ### 1. Configure and run the API
 
 ```powershell
-cd backend
-Copy-Item .env.example .env
+Copy-Item backend\.env.example backend\.env
 npm install
-npm run dev
+npm run dev --workspace=alumni-connect-api
 ```
 
 Edit `backend/.env` and set `MONGODB_URI` and a long random `JWT_SECRET`. In MongoDB Atlas, create a database user and allow the development machine's IP in Network Access. The API listens on `http://localhost:5000`.
@@ -58,10 +58,8 @@ Edit `backend/.env` and set `MONGODB_URI` and a long random `JWT_SECRET`. In Mon
 ### 2. Run the website
 
 ```powershell
-cd frontend
-Copy-Item .env.example .env
-npm install
-npm run dev
+Copy-Item frontend\.env.example frontend\.env
+npm run dev --workspace=alumni-connect-web
 ```
 
 Open `http://localhost:5173`. `VITE_API_URL` defaults to `http://localhost:5000/api`. On API startup, the database adds the standard B.Tech departments (CSE, IT, ECE, EEE, Mechanical, Civil, and AI & Data Science) if they do not already exist. An administrator can add, rename, or remove departments to match the college.
@@ -71,8 +69,7 @@ Open `http://localhost:5173`. `VITE_API_URL` defaults to `http://localhost:5000/
 Set `ADMIN_NAME`, `ADMIN_EMAIL`, and a unique `ADMIN_PASSWORD` of at least 12 characters in `backend/.env`, then run:
 
 ```powershell
-cd backend
-npm run create-admin
+npm run create-admin --workspace=alumni-connect-api
 ```
 
 The setup command refuses to overwrite an existing account. Sign in with that administrator, adjust departments as needed, then create faculty and HOD accounts from **Dashboard → Management**. Users can register as students or alumni from the landing page.
@@ -141,24 +138,27 @@ All private routes use `Authorization: Bearer <JWT>`. JSON request and response 
 
 ### MongoDB Atlas
 
-Create a production database and database user. Add the Render service's outbound IP policy as appropriate for your Atlas plan (or temporarily allow access from anywhere only if required by the hosting plan), and keep credentials in Render environment variables—not in source control.
+Create a free Atlas cluster and database user. Vercel Functions can use varying outbound IP addresses; if Atlas requires it, you may need to allow connections from any IP (`0.0.0.0/0`). If you do, use a unique, strong database password and restrict the database user's permissions. Keep the connection string in Vercel environment variables, never in source control.
 
-### Backend on Render
+### Full-stack deployment on Vercel
 
-Create a Blueprint from `render.yaml`, or create a Node web service with:
+The root `vercel.json` builds the Vite frontend from `frontend/`, keeps React Router routes working on refresh, and sends `/api/*` requests to the Express function in `api/`.
 
-- Root directory: `backend`
-- Build command: `npm install`
-- Start command: `npm start`
-- Health check: `/api/health`
+1. Import the GitHub repository into [Vercel](https://vercel.com/new).
+2. Set **Root Directory** to the repository root (`.`), not `frontend` or `backend`.
+3. Use the repository's root `package.json` build script. The output directory is `frontend/dist`.
+4. Add these environment variables to the Vercel project:
+   - `MONGODB_URI`: your Atlas connection string
+   - `JWT_SECRET`: a random secret of at least 32 characters
+   - `JWT_EXPIRES_IN`: `7d`
+   - `NODE_ENV`: `production`
+   - `CLIENT_URL`: the exact Vercel site origin, such as `https://your-site.vercel.app`
+   - `VITE_API_URL`: `/api`
+5. Deploy and check `https://your-site.vercel.app/api/health`; it should return `{"status":"ok"}`.
 
-Set `MONGODB_URI`, `JWT_SECRET`, and `CLIENT_URL` in the Render dashboard. `CLIENT_URL` must be the exact deployed Vercel origin. Configure the SMTP variables if password-reset email is required. After deployment, temporarily set `ADMIN_NAME`, `ADMIN_EMAIL`, and a strong `ADMIN_PASSWORD` in the Render service environment, open a Render shell, and run `npm run create-admin`. Remove the three bootstrap variables after the administrator has been created.
+Create the first administrator from your computer: set the Atlas `MONGODB_URI`, `ADMIN_NAME`, `ADMIN_EMAIL`, and a strong `ADMIN_PASSWORD` in `backend/.env`, then run `npm run create-admin --workspace=alumni-connect-api` from the repository root. Allow your computer's IP in Atlas Network Access while running the command. The script refuses to overwrite an existing account.
 
-### Frontend on Vercel
-
-Import the repository and set the project root to `frontend`. Vercel uses `npm install` and `npm run build`; the output directory is `dist`. Set `VITE_API_URL` to the deployed API base URL ending in `/api`, for example `https://your-api.onrender.com/api`. The Vercel rewrite file keeps React Router routes working on refresh.
-
-After both deployments, update Render's `CLIENT_URL` with the final Vercel domain and redeploy the API.
+Vercel's [Hobby plan](https://vercel.com/docs/plans/hobby) is free for personal projects. Password-reset email is optional; configure SMTP only if your provider and the Vercel runtime support it.
 
 ## Security and operations notes
 
