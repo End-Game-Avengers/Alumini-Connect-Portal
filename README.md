@@ -49,8 +49,8 @@ Open two terminals from the project root.
 
 ```powershell
 Copy-Item backend\.env.example backend\.env
-npm install
-npm run dev --workspace=alumni-connect-api
+npm run install:all
+npm run dev:api
 ```
 
 Edit `backend/.env` and set `MONGODB_URI` and a long random `JWT_SECRET`. In MongoDB Atlas, create a database user and allow the development machine's IP in Network Access. The API listens on `http://localhost:5000`.
@@ -59,7 +59,7 @@ Edit `backend/.env` and set `MONGODB_URI` and a long random `JWT_SECRET`. In Mon
 
 ```powershell
 Copy-Item frontend\.env.example frontend\.env
-npm run dev --workspace=alumni-connect-web
+npm run dev:web
 ```
 
 Open `http://localhost:5173`. `VITE_API_URL` defaults to `http://localhost:5000/api`. On API startup, the database adds the standard B.Tech departments (CSE, IT, ECE, EEE, Mechanical, Civil, and AI & Data Science) if they do not already exist. An administrator can add, rename, or remove departments to match the college.
@@ -69,7 +69,7 @@ Open `http://localhost:5173`. `VITE_API_URL` defaults to `http://localhost:5000/
 Set `ADMIN_NAME`, `ADMIN_EMAIL`, and a unique `ADMIN_PASSWORD` of at least 12 characters in `backend/.env`, then run:
 
 ```powershell
-npm run create-admin --workspace=alumni-connect-api
+npm run create-admin
 ```
 
 The setup command refuses to overwrite an existing account. Sign in with that administrator, adjust departments as needed, then create faculty and HOD accounts from **Dashboard → Management**. Users can register as students or alumni from the landing page.
@@ -156,7 +156,7 @@ The root `vercel.json` builds the Vite frontend from `frontend/`, keeps React Ro
    - `VITE_API_URL`: `/api`
 5. Deploy and check `https://your-site.vercel.app/api/health`; it should return `{"status":"ok"}`.
 
-Create the first administrator from your computer: set the Atlas `MONGODB_URI`, `ADMIN_NAME`, `ADMIN_EMAIL`, and a strong `ADMIN_PASSWORD` in `backend/.env`, then run `npm run create-admin --workspace=alumni-connect-api` from the repository root. Allow your computer's IP in Atlas Network Access while running the command. The script refuses to overwrite an existing account.
+Create the first administrator from your computer: set the Atlas `MONGODB_URI`, `ADMIN_NAME`, `ADMIN_EMAIL`, and a strong `ADMIN_PASSWORD` in `backend/.env`, then run `npm run create-admin` from the repository root. Allow your computer's IP in Atlas Network Access while running the command. The script refuses to overwrite an existing account.
 
 Vercel's [Hobby plan](https://vercel.com/docs/plans/hobby) is free for personal projects. Password-reset email is optional; configure SMTP only if your provider and the Vercel runtime support it.
 

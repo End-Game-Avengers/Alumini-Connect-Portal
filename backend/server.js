@@ -13,11 +13,19 @@ if (!process.env.JWT_SECRET || process.env.JWT_SECRET.length < 32) {
   throw new Error("JWT_SECRET must be set to a random value of at least 32 characters");
 }
 const allowedOrigins = (process.env.CLIENT_URL || "http://localhost:5173").split(",").map((origin) => origin.trim());
-app.use(cors({
-  origin(origin, callback) {
-    if (!origin || allowedOrigins.includes(origin)) return callback(null, true);
-    return callback(new Error("Origin is not allowed by CORS"));
+function isSameOrigin(origin, req) {
+  try {
+    return new URL(origin).host === (req.headers["x-forwarded-host"] || req.headers.host);
+  } catch {
+    return false;
   }
+}
+app.use(cors((req, callback) => {
+  const origin = req.headers.origin;
+  if (!origin || allowedOrigins.includes(origin) || isSameOrigin(origin, req)) {
+    return callback(null, { origin: true });
+  }
+  return callback(new Error("Origin is not allowed by CORS"));
 }));
 app.use(express.json({ limit: "1mb" }));
 app.use(async (req, res, next) => {
