@@ -142,7 +142,7 @@ Create a free Atlas cluster and database user. Vercel Functions can use varying 
 
 ### Full-stack deployment on Vercel
 
-The root `vercel.json` builds the Vite frontend from `frontend/`, keeps React Router routes working on refresh, and sends `/api/*` requests to the Express function in `api/`.
+The root `vercel.json` builds the Vite frontend from `frontend/`, keeps React Router routes working on refresh, and rewrites `/api/*` requests to the shared Express function in `api/index.js`.
 
 The Vercel install command resolves platform-specific optional packages on its Linux build machine instead of using the Windows-generated root lockfile. The root Node.js engine range also excludes unsupported future major releases.
 
