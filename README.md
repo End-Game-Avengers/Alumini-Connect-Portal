@@ -144,6 +144,8 @@ Create a free Atlas cluster and database user. Vercel Functions can use varying 
 
 The root `vercel.json` builds the Vite frontend from `frontend/`, keeps React Router routes working on refresh, and sends `/api/*` requests to the Express function in `api/`.
 
+The Vercel install command resolves platform-specific optional packages on its Linux build machine instead of using the Windows-generated root lockfile. The root Node.js engine range also excludes unsupported future major releases.
+
 1. Import the GitHub repository into [Vercel](https://vercel.com/new).
 2. Set **Root Directory** to the repository root (`.`), not `frontend` or `backend`.
 3. Set **Framework Preset** to **Vite** (not Express). Use the repository's root `package.json` build script. The output directory is `frontend/dist`.
