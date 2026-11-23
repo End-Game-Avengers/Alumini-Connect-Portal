@@ -146,7 +146,7 @@ The root `vercel.json` builds the Vite frontend from `frontend/`, keeps React Ro
 
 1. Import the GitHub repository into [Vercel](https://vercel.com/new).
 2. Set **Root Directory** to the repository root (`.`), not `frontend` or `backend`.
-3. Use the repository's root `package.json` build script. The output directory is `frontend/dist`.
+3. Set **Framework Preset** to **Vite** (not Express). Use the repository's root `package.json` build script. The output directory is `frontend/dist`.
 4. Add these environment variables to the Vercel project:
    - `MONGODB_URI`: your Atlas connection string
    - `JWT_SECRET`: a random secret of at least 32 characters
