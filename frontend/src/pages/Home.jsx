@@ -175,7 +175,7 @@ export default function Home() {
         <Link className="brand brand-footer" to="/"><span className="brand-mark">AC</span><span>Alumni<span className="brand-accent">Connect</span></span></Link>
         <p>One campus. Every generation.</p>
         <div><a href="#about">About</a><a href="#features">Features</a><a href="#events">Events</a><a href="#contact">Contact</a></div>
-        <small>© {new Date().getFullYear()} Alumni Connect. Built for your college community.</small>
+        <small>© {new Date().getFullYear()} Alumni Connect Portal. All Rights Reserved. Designed & Developed by Team Endgame of Avengers</small>
       </footer>
     </div>
   );
